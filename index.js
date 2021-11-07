@@ -1,5 +1,8 @@
-import DiscordJS, { Intents } from 'discord.js'
+import DiscordJS, { Intents, MessageAttachment } from 'discord.js'
+import { spawnSync } from 'child_process'
 import dotenv from 'dotenv'
+import path from 'path'
+const __dirname = path.resolve();
 dotenv.config()
 
 const client = new DiscordJS.Client({
@@ -12,6 +15,29 @@ const client = new DiscordJS.Client({
 
 client.on('ready', () => {
     console.log('Bot is online')
+    const guild = client.guilds.cache.get(process.env.GUILDID)
+    let commands
+
+    if (guild) {
+        commands = guild.commands
+    }
+    else {
+        commands = client.application.commands
+    }
+
+    commands.create({
+        name: 'muscleman',
+        description: 'Creates a muscleman img from user inputted text.',
+        options: [
+            {
+                name: 'prompt',
+                description: 'Prompt after "You know who else"',
+                required: true,
+                type: DiscordJS.Constants.ApplicationCommandOptionTypes.STRING
+            }
+        ]
+        
+    })
 })
 
 client.on('messageCreate', (message) => {
@@ -22,5 +48,30 @@ client.on('messageCreate', (message) => {
     }
 })
 
+client.on('interactionCreate', async (interaction) => {
+    if (!interaction.isCommand()) {
+        return
+    }
+
+    const { commandName, options } = interaction
+
+    if (commandName === 'muscleman') {
+        const musclemanPython = spawnSync(
+            'python3', 
+            ['muscleman-command/muscleman-img-create.py', options.getString('prompt')]
+        )
+
+        const image = path.join(__dirname, 
+            'muscleman-command/muscleman_meme_temp.png')
+
+        interaction.reply({
+            files: [{
+                attachment: image,
+            }]
+        })
+    }
+})
+
+console.log(__dirname)
 
 client.login(process.env.DISCORD_TOKEN)
