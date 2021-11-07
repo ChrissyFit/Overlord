@@ -1,6 +1,6 @@
 import DiscordJS, { Intents, MessageAttachment } from 'discord.js'
-import { spawnSync } from 'child_process'
 import dotenv from 'dotenv'
+import { spawn, spawnSync } from 'child_process'
 import path from 'path'
 const __dirname = path.resolve();
 dotenv.config()
@@ -56,7 +56,7 @@ client.on('interactionCreate', async (interaction) => {
     const { commandName, options } = interaction
 
     if (commandName === 'muscleman') {
-        const musclemanPython = spawnSync(
+        spawnSync(
             'python3', 
             ['muscleman-command/muscleman-img-create.py', options.getString('prompt')]
         )
@@ -66,9 +66,10 @@ client.on('interactionCreate', async (interaction) => {
 
         interaction.reply({
             files: [{
-                attachment: image,
+                attachment: image
             }]
         })
+
     }
 })
 
