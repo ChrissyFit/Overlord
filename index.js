@@ -56,23 +56,23 @@ client.on('interactionCreate', async (interaction) => {
     const { commandName, options } = interaction
 
     if (commandName === 'muscleman') {
-        // spawnSync(
-        //     'python3', 
-        //     ['muscleman-command/muscleman-img-create.py', options.getString('prompt')]
-        // )
+         spawnSync(
+             'python3', 
+             ['muscleman-command/muscleman-img-create.py', options.getString('prompt')]
+         )
 
-        // const image = path.join(__dirname, 
-        //     'muscleman-command/muscleman_meme_temp.png')
+         const image = path.join(__dirname, 
+             'muscleman-command/muscleman_meme_temp.png')
 
-        // interaction.reply({
-        //     files: [{
-        //         attachment: image
-        //     }]
-        // })
+         interaction.reply({
+             files: [{
+                 attachment: image
+             }]
+         })
 
-        interaction.reply({
-            content: "Currently unavailable."
-        })
+       // interaction.reply({
+       //     content: "Currently unavailable."
+       // })
 
     }
 })
